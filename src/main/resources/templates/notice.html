@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+
+    <link rel="stylesheet" type="text/css" href="../vendor/bootstrap/css/bootstrap.min.css">
+
+    <title>公告</title>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" th:fragment="header">
+        <div class="container-fluid">
+           <a class="navbar-brand col-10" th:href="@{/viewNotice}">佈告欄系統</a>
+           <div class="text-right">
+              <div th:if="${session.user_id != null}">
+                 <a href="/logout" class="btn btn-secondary">登出</a>
+              </div>
+              <div th:if="${session.user_id == null}">
+                 <a href="/login" class="btn btn-primary">登入</a>
+              </div>
+           </div>
+        </div>
+     </nav>
+     <br>
+     <br>
+     <br>
+
+    <div class="container-fluid">
+        <h2 th:text="${name + ' 的公告'}"></h2>
+
+        <div class="row">
+            <div class="col-6 mb-3">
+                <label th:text="'標題: ' + ${notice.title?.toString()}"></label>
+            </div>
+            <div class="col-3 mb-3">
+                <label th:text="'發佈日期: ' + ${notice.release_date?.toString()}"></label>
+            </div>
+            <div class="col-3 mb-3">
+                <label th:text="'截止日期: ' + ${notice.expiration_date?.toString()}"></label>
+            </div>
+        </div>
+
+        <div>
+            <label>內容:</label><br>
+            <textarea th:text="${notice.content?.toString()}" readonly required
+                style="width: 100%; height: 250px; resize: none;"></textarea>
+        </div>
+
+        <div class="text-center">
+            <a th:href="@{/viewNotice}" class="btn btn-secondary align-middle">返回公告欄</a>
+        </div>
+    </div>
+
+    <script src="../vendor/jquery/jquery-3.7.1.min.js"></script>
+    <script src="../vendor/bootstrap/js/popper.js"></script>
+    <script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
+</body>
+
+</html>

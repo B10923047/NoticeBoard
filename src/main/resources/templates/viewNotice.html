@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+   <meta charset="UTF-8">
+
+   <link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
+
+   <title>佈告欄</title>
+</head>
+
+<body>
+   <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" th:fragment="header">
+      <div class="container-fluid">
+         <a class="navbar-brand col-10" th:href="@{/viewNotice}">佈告欄系統</a>
+         <div class="text-right">
+            <div th:if="${session.user_id != null}">
+               <a href="/logout" class="btn btn-secondary">登出</a>
+            </div>
+            <div th:if="${session.user_id == null}">
+               <a href="/login" class="btn btn-primary">登入</a>
+            </div>
+         </div>
+      </div>
+   </nav>
+   <br>
+   <br>
+   <br>
+
+   <div class="container-fluid">
+      <h2 class="text-center">瀏覽公告</h2>
+
+      <table class="table table-striped">
+         <thead class="table-dark">
+            <tr>
+               <th class="col-1">編號</th>
+               <th class="col-4">標題</th>
+               <th class="col-1">發布日期</th>
+               <th class="col-1">截止日期</th>
+               <th class="col-1">發佈者</th>
+               <th class="col-1">編輯</th>
+               <th class="col-1">刪除</th>
+            </tr>
+         </thead>
+         <tbody>
+            <tr th:each="notice, rowStat : ${noticeList}">
+               <th scope="row" class="align-middle" th:text="${rowStat.index + 1}"></th>
+               <td class="align-middle">
+                  <a th:text="${notice.title}" th:href="@{/notice/{noticeId}(noticeId=${notice.notice_id})}"></a>
+               </td>
+               <td th:text="${notice.release_date}" class="align-middle"></td>
+               <td th:text="${notice.expiration_date}" class="align-middle"></td>
+               <td class="align-middle">
+                  <div th:each="user, rowStat : ${userList}">
+                     <div th:if="${user.user_id == notice.user_id}">
+                        <div th:text="${user.name}"></div>
+                     </div>
+                  </div>
+               </td>
+               <td>
+                  <div th:if="${session.user_id != null}">
+                     <div th:if="${notice.user_id == session.user_id || session.isAdministrator}">
+                        <a th:href="@{/editNotice/{noticeId}(noticeId=${notice.notice_id})}"
+                           class="btn btn-primary align-middle">編輯</a>
+                     </div>
+                  </div>
+               </td>
+               <td>
+                  <div th:if="${session.user_id != null}">
+                     <div th:if="${notice.user_id == session.user_id || session.isAdministrator}">
+                        <a th:href="@{/deleteNotice/{noticeId}(noticeId=${notice.notice_id})}"
+                           class="btn btn-danger align-middle">刪除</a>
+                     </div>
+                  </div>
+               </td>
+            </tr>
+         </tbody>
+      </table>
+
+      <div th:if="${noticeList.isEmpty()}" class="text-center">
+         <h6 style="color: red;">沒有公告</h6>
+      </div>
+
+      <div class="text-center mb-3">
+         <a href="/addNotice" class="btn btn-primary">新增</a>
+      </div>
+
+      <div th:if="${message != null}" class="alert alert-success" role="alert">
+         [[${message}]]
+      </div>
+   </div>
+
+   <script src="vendor/jquery/jquery-3.7.1.min.js"></script>
+   <script src="vendor/bootstrap/js/popper.js"></script>
+   <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+   <script src="js/script.js"></script>
+</body>
+
+<script th:inline="javascript">
+   var message = /*[[${message}]]*/ null;
+</script>
+
+</html>
